@@ -1,87 +1,103 @@
 import "./App.css";
+import { NavLink, Route, Routes } from "react-router-dom";
+import { Plus, Search, Bell, User, Home, MessageCircle, TrendingUp, MoreHorizontal } from "lucide-react";
 
-export default function App() {
+// Импортируем страницы
+import HomePage from "./pages/Home";
+import Assistant from "./pages/Assistant";
+import Tracker from "./pages/Tracker";
+import More from "./pages/More";
+
+// ---------- Layout ----------
+
+function Shell() {
   return (
     <div className="appWrapper">
-    <div className="app">
-      {/* Шапка */}
-      <header className="header">
-        <button className="iconBtn" aria-label="Добавить">＋</button>
+      <div className="app">
+        {/* Шапка */}
+        <header className="header">
+          <button className="iconBtn" aria-label="Добавить">
+            <Plus size={44} strokeWidth={2.5} />
+          </button>
 
-        <div className="headerRight">
-          <button className="iconBtn" aria-label="Поиск">⌕</button>
-          <button className="iconBtn" aria-label="Уведомления">🔔</button>
+          <div className="headerRight">
+            <button className="iconBtn" aria-label="Поиск">
+              <Search size={44} strokeWidth={2.5} />
+            </button>
+            
+            <button className="iconBtn" aria-label="Уведомления">
+              <Bell size={44} strokeWidth={2.5} />
+            </button>
 
-          <div className="balancePill" aria-label="Баланс">
-            <span className="balanceIcon">💳</span>
-            <span className="balanceText">0.00</span>
+            <div className="balancePill" aria-label="Баланс">
+              <span className="balanceText">0.00</span>
+            </div>
+
+            <button className="iconBtn profileBtn" aria-label="Профиль">
+              <User size={44} strokeWidth={2.5} />
+            </button>
           </div>
+        </header>
 
-          <button className="iconBtn" aria-label="Профиль">👤</button>
-        </div>
-      </header>
+        {/* Контент страниц */}
+        <main className="mainContent">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/assistant" element={<Assistant />} />
+            <Route path="/tracker" element={<Tracker />} />
+            <Route path="/more" element={<More />} />
+          </Routes>
+        </main>
 
-      {/* Приветствие */}
-      <section className="hero">
-        <div className="hello">Привет!</div>
-        <h1 className="title">Как ты себя чувствуешь сегодня?</h1>
+        {/* Нижняя навигация */}
+        <nav className="bottomNav">
+          <NavLink 
+            to="/" 
+            className={({ isActive }) => `navItem${isActive ? " active" : ""}`}
+          >
+            <Home size={32} strokeWidth={2} />
+            <span>Главная</span>
+          </NavLink>
 
-        <div className="orb" />
+          <NavLink 
+            to="/tracker" 
+            className={({ isActive }) => `navItem${isActive ? " active" : ""}`}
+          >
+            <TrendingUp size={32} strokeWidth={2} />
+            <span>Трекер</span>
+          </NavLink>
 
-        {/* Поисковая строка / запрос */}
-        <div className="inputWrap">
-          <input
-            className="input"
-            placeholder="Например: «Накрыла тревога…»"
-          />
-          <button className="micBtn" aria-label="Голосовой ввод">🎙</button>
-        </div>
-      </section>
+          {/* Центральная круглая кнопка AI */}
+          <button 
+            className="fabButton"
+            onClick={() => window.location.href = '/assistant'}
+            aria-label="Открыть AI-помощника"
+          >
+          </button>
 
-      {/* Заголовок блока */}
-      <div className="sectionTitle">
-        <span className="line" />
-        <span>Твой личный помощник</span>
-        <span className="line" />
+          <NavLink 
+            to="/assistant" 
+            className={({ isActive }) => `navItem${isActive ? " active" : ""}`}
+          >
+            <MessageCircle size={32} strokeWidth={2} />
+            <span>Помощник</span>
+          </NavLink>
+
+          <NavLink 
+            to="/more" 
+            className={({ isActive }) => `navItem${isActive ? " active" : ""}`}
+          >
+            <MoreHorizontal size={32} strokeWidth={2} />
+            <span>Ещё</span>
+          </NavLink>
+        </nav>
+
+        <div className="safeArea" />
       </div>
-
-      {/* Сетка карточек */}
-      <section className="grid">
-        <div className="card">
-          <div className="cardIcon">💬</div>
-          <div className="cardTitle">AI-Помощник</div>
-          <div className="cardSub">Поддержка в моменте</div>
-        </div>
-
-        <div className="card">
-          <div className="cardIcon">🧩</div>
-          <div className="cardTitle">Ситуативная помощь</div>
-          <div className="cardSub">Инструкции “что делать”</div>
-        </div>
-
-        <div className="card">
-          <div className="cardIcon">📈</div>
-          <div className="cardTitle">Трекер состояния</div>
-          <div className="cardSub">Отмечай прогресс</div>
-        </div>
-
-        <div className="card">
-          <div className="cardIcon">🎧</div>
-          <div className="cardTitle">Музыка для настроения</div>
-          <div className="cardSub">Быстро переключиться</div>
-        </div>
-      </section>
-
-      {/* Нижняя навигация (заглушка) */}
-      <nav className="bottomNav">
-        <button className="navItem active">🏠<span>Главная</span></button>
-        <button className="navItem">💬<span>Помощник</span></button>
-        <button className="navItem">📈<span>Трекер</span></button>
-        <button className="navItem">⋯<span>Ещё</span></button>
-      </nav>
-
-      <div className="safeArea" />
-    </div>
     </div>
   );
+}
+
+export default function App() {
+  return <Shell />;
 }

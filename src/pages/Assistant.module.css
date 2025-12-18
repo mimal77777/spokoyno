@@ -1,0 +1,189 @@
+/* ========== Страница Помощника ========== */
+.assistantPage {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 56px - 72px);
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.chatBox {
+  flex: 1;
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  overflow-y: auto;
+  box-shadow: 0 2px 16px rgba(106, 218, 209, 0.08);
+  margin-bottom: 12px;
+  border: 1px solid #e3f5f1;
+}
+
+.message {
+  display: flex;
+  animation: slideIn 0.2s ease;
+  margin-bottom: 12px;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.userMessage {
+  justify-content: flex-end;
+}
+
+.aiMessage {
+  justify-content: flex-start;
+}
+
+.messageContent {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 15px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.userMessage .messageContent {
+  background: linear-gradient(135deg, #6EDAD1 0%, #3BB6AE 100%);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.aiMessage .messageContent {
+  background: #f8fffe;
+  color: #1a1a1a;
+  border-bottom-left-radius: 4px;
+  border: 1px solid #e3f5f1;
+}
+
+/* ========== Варианты тем ========== */
+.topicsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.topicButton {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: white;
+  border: 2px solid #e3f5f1;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.topicButton:hover {
+  border-color: #6EDAD1;
+  transform: translateX(4px);
+  box-shadow: 0 2px 12px rgba(106, 218, 209, 0.12);
+}
+
+.topicButton:active {
+  transform: translateX(2px) scale(0.98);
+}
+
+.topicIcon {
+  width: 44px;
+  height: 44px;
+  background: #f8fffe;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.topicText {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+/* ========== Поле ввода ========== */
+.chatInputWrap {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: flex-end;
+}
+
+.chatInput {
+  flex: 1;
+  padding: 14px 18px;
+  border: 1px solid #e3f5f1;
+  border-radius: 16px;
+  font-size: 15px;
+  outline: none;
+  background: white;
+  font-family: inherit;
+  resize: none;
+  max-height: 100px;
+  line-height: 1.5;
+  color: #1a1a1a;
+}
+
+.chatInput::placeholder {
+  color: #999;
+}
+
+.chatInput:focus {
+  border-color: #6EDAD1;
+  box-shadow: 0 0 0 3px rgba(110, 218, 209, 0.1);
+}
+
+.chatSendBtn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6EDAD1 0%, #3BB6AE 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.chatSendBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.chatSendBtn:not(:disabled):hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(106, 218, 209, 0.3);
+}
+
+.chatSendBtn:not(:disabled):active {
+  transform: scale(0.95);
+}

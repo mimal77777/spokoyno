@@ -1,252 +1,526 @@
-.appWrapper {
-    display: flex;
-  justify-content: center;
-}
-:root{
-  --app-max: 520px;
-  --app-pad: 12px;
-  --tiffany:#6EDAD1;
-  --tiffany-2:#3BB6AE;
-  --bg-1:#F6FFFE;
-  --bg-2:#E9FBF9;
-  --text:#0b1b1a;
-  --muted:#6b7c7b;
-  --card:#ffffff;
-  --shadow: 0 10px 30px rgba(0,0,0,.06);
-}
-
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(1200px 800px at 50% 0%, var(--bg-2), var(--bg-1));
-  color:var(--text);
-}
-
-.app{
-
-  width: 100;
-  max-width: 520px;
-  padding: 16px;
+/* ========== Глобальные стили ========== */
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  background: #e8f5f3;
+  color: #1a1a1a;
+  overflow-x: hidden;
+}
+
+/* Центрирование для #root */
+#root {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  background: #e8f5f3;
+  width: 100%;
+}
+
+/* ========== Обёртка приложения ========== */
+.appWrapper {
+  width: 100%;
+  max-width: 600px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: #f8fffe;
+  position: relative;
+}
+
+.app {
+  width: 100%;
+  background: #f8fffe;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Тень по бокам для больших экранов */
+@media (min-width: 601px) {
+  .appWrapper {
+    box-shadow: 0 0 40px rgba(106, 218, 209, 0.12);
   }
-
-
-/* Header */
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding: 6px 0 2px;
 }
 
-.headerRight{
-  display:flex;
-  align-items:center;
-  gap:10px;
+/* ========== Шапка ========== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  padding-top: max(12px, calc(env(safe-area-inset-top) + 8px));
+  background: #f8fffe;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
 }
 
-.iconBtn{
-  width:38px;
-  height:38px;
-  border-radius:999px;
-  border:1px solid rgba(0,0,0,.06);
-  background: rgba(255,255,255,.72);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 6px 18px rgba(0,0,0,.05);
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:16px;
+.iconBtn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(106, 218, 209, 0.12);
+  color: #6EDAD1;
 }
 
-.balancePill{
-  height:38px;
-  padding: 0 12px;
-  border-radius:999px;
-  border:1px solid rgba(0,0,0,.06);
-  background: rgba(255,255,255,.72);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 6px 18px rgba(0,0,0,.05);
-  display:flex;
-  align-items:center;
-  gap:8px;
+.iconBtn:active {
+  transform: scale(0.95);
+  box-shadow: 0 1px 4px rgba(106, 218, 209, 0.2);
 }
 
-.balanceText{
-  font-weight:600;
-  color:#1b2b2a;
+.profileBtn {
+  background: linear-gradient(135deg, #6EDAD1 0%, #3BB6AE 100%);
+  color: white;
 }
 
-/* Hero */
-.hero{
-  text-align:center;
-  padding: 18px 0 8px;
-}
-
-.hello{
-  color: var(--tiffany-2);
-  font-weight:700;
-  font-size:22px;
-  margin-top: 6px;
-}
-
-.title{
-  margin: 8px 0 16px;
-  font-size:30px;
-  line-height:1.08;
-  letter-spacing:-.02em;
-}
-
-.orb{
-  width: 180px;
-  height: 180px;
-  margin: 0 auto 18px;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 35% 30%, rgba(255,255,255,.85), rgba(110,218,209,.20) 45%, rgba(59,182,174,.12) 75%),
-    radial-gradient(circle at 70% 70%, rgba(110,218,209,.22), rgba(255,255,255,.6));
-  box-shadow: 0 30px 60px rgba(59,182,174,.12);
-  border: 1px solid rgba(59,182,174,.14);
-}
-
-/* Input */
-.inputWrap{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  background: rgba(255,255,255,.85);
-  border: 1px solid rgba(0,0,0,.06);
-  border-radius: 999px;
-  padding: 10px 12px 10px 14px;
-  box-shadow: var(--shadow);
-  margin: 0 auto;
-  max-width: 440px;
-}
-
-.input{
-  border:none;
-  outline:none;
-  background:transparent;
-  width:100%;
-  font-size:15px;
-  color: var(--text);
-}
-
-.micBtn{
-  width:44px;
-  height:44px;
-  border-radius:999px;
-  border:none;
-  cursor:pointer;
-  background: linear-gradient(180deg, var(--tiffany), var(--tiffany-2));
-  color:white;
-  box-shadow: 0 10px 24px rgba(59,182,174,.22);
-  font-size:18px;
-}
-
-/* Section title */
-.sectionTitle{
-  margin: 14px 0 12px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  color:#1f2e2d;
-  font-weight:700;
-  justify-content:center;
-}
-
-.line{
-  height:2px;
-  width: 64px;
-  background: linear-gradient(90deg, transparent, rgba(59,182,174,.35), transparent);
-}
-
-/* Grid cards */
-.grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding-bottom: 92px;
-}
-
-.card{
-  background: rgba(255,255,255,.88);
-  border: 1px solid rgba(0,0,0,.06);
-  border-radius: 16px;
-  padding: 14px 14px 12px;
-  box-shadow: var(--shadow);
-  cursor:pointer;
-  min-height: 110px;
-  display:flex;
-  flex-direction:column;
+.headerRight {
+  display: flex;
+  align-items: center;
   gap: 8px;
 }
 
-.cardIcon{
-  width:36px;
-  height:36px;
-  border-radius: 12px;
-  background: rgba(110,218,209,.16);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
+.balancePill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: white;
+  border-radius: 20px;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(106, 218, 209, 0.12);
+  border: 1px solid #e3f5f1;
 }
 
-.cardTitle{
-  font-weight:800;
-  letter-spacing:-.01em;
+.balanceText {
+  color: #1a1a1a;
 }
 
-.cardSub{
-  font-size:13px;
-  color: var(--muted);
-  line-height:1.25;
+/* ========== Основной контент ========== */
+.mainContent {
+  flex: 1;
+  padding: 0 0 90px 0;
+  overflow-y: auto;
+  width: 100%;
 }
 
-/* Bottom nav */
+/* ========== Главная страница (Hero) ========== */
+.hero {
+  padding: 24px 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.hello {
+  font-size: 18px;
+  color: #6EDAD1;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 32px;
+  line-height: 1.3;
+}
+
+.orb {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 32px;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle at 35% 25%, rgba(110, 218, 209, 0.4) 0%, transparent 40%),
+    radial-gradient(circle at 65% 70%, rgba(158, 244, 236, 0.35) 0%, transparent 45%),
+    radial-gradient(circle at 20% 60%, rgba(184, 230, 223, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 30%, rgba(110, 218, 209, 0.25) 0%, transparent 45%),
+    linear-gradient(135deg, #e3f5f1 0%, #f0faf8 100%);
+  background-size: 150% 150%, 180% 180%, 160% 160%, 140% 140%, 100% 100%;
+  background-position: 0% 0%, 100% 100%, 50% 50%, 70% 30%, 0% 0%;
+  animation: smokeFlow 18s ease-in-out infinite;
+  box-shadow: 
+    0 8px 24px rgba(106, 218, 209, 0.12),
+    inset 0 2px 16px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 8px rgba(110, 218, 209, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+.orb::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(110, 218, 209, 0.4) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(158, 244, 236, 0.35) 0%, transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(184, 230, 223, 0.3) 0%, transparent 40%);
+  background-size: 100% 100%;
+  animation: smokeRotate 25s linear infinite;
+  filter: blur(20px);
+  opacity: 0.7;
+}
+
+.orb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(227, 245, 241, 0.3) 35%,
+    transparent 60%);
+  pointer-events: none;
+}
+
+@keyframes smokeFlow {
+  0%, 100% {
+    background-position: 0% 0%, 100% 100%, 50% 50%, 70% 30%, 0% 0%;
+  }
+  25% {
+    background-position: 40% 20%, 70% 80%, 80% 40%, 30% 60%, 0% 0%;
+  }
+  50% {
+    background-position: 70% 50%, 30% 60%, 20% 70%, 90% 20%, 0% 0%;
+  }
+  75% {
+    background-position: 30% 80%, 80% 30%, 60% 20%, 40% 90%, 0% 0%;
+  }
+}
+
+@keyframes smokeRotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.7;
+  }
+  25% {
+    opacity: 0.5;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.08);
+    opacity: 0.8;
+  }
+  75% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.7;
+  }
+}
+
+.orb:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 12px 32px rgba(106, 218, 209, 0.18),
+    inset 0 2px 16px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 8px rgba(110, 218, 209, 0.12);
+}
+
+.orb:hover::before {
+  animation-duration: 15s;
+}
+
+.orb:active {
+  transform: scale(0.98);
+}
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border-radius: 24px;
+  padding: 4px 4px 4px 20px;
+  box-shadow: 0 2px 12px rgba(106, 218, 209, 0.12);
+  max-width: 400px;
+  margin: 0 auto;
+  border: 1px solid #e3f5f1;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  padding: 10px 0;
+  background: transparent;
+  color: #1a1a1a;
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.micBtn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #6EDAD1 0%, #3BB6AE 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.micBtn:active {
+  transform: scale(0.95);
+}
+
+/* ========== Заголовок секции ========== */
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 20px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  width: 100%;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #6EDAD1 50%, transparent 100%);
+}
+
+/* ========== Сетка карточек ========== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 0 20px 32px;
+  width: 100%;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 2px 16px rgba(106, 218, 209, 0.08);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #e3f5f1;
+}
+
+.card:active {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(106, 218, 209, 0.15);
+}
+
+.cardIcon {
+  width: 56px;
+  height: 56px;
+  background: #e3f5f1;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6EDAD1;
+  margin-bottom: 16px;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.cardSub {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* ========== Страницы-заглушки ========== */
+.placeholderPage {
+  padding: 20px;
+  width: 100%;
+}
+
+.placeholderPage h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1a1a1a;
+}
+
+.placeholderPage p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* ========== Нижняя навигация ========== */
 .bottomNav {
   position: fixed;
-  bottom: 10px;
-
-  width: calc(100% - 32px);
-  max-width: 520px;
-  
-  background: rgba(255, 255, 255, 0.88);
-  border-radius: 18px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.1);
-
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 600px;
   display: flex;
   justify-content: space-around;
-  padding: 10px 8px;
-
-  backdrop-filter: blur(12px);
+  align-items: center;
+  background: white;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  box-shadow: 0 -2px 16px rgba(106, 218, 209, 0.08);
+  z-index: 1000;
+  border-top: 1px solid #e3f5f1;
 }
 
-.navItem{
-  border:none;
-  background:transparent;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  font-size:16px;
-  cursor:pointer;
-  color:#506160;
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  color: #999;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  min-width: 70px;
 }
 
-.navItem span{
-  font-size:12px;
-  font-weight:600;
+.navItem span {
+  font-size: 11px;
 }
 
-.navItem.active{
-  color: var(--tiffany-2);
+.navItem.active {
+  color: #3BB6AE;
+  background: #e3f5f1;
 }
 
-.safeArea{
-  height: 90px;
+.navItem:active {
+  transform: scale(0.95);
+}
+
+/* ========== Центральная круглая кнопка (FAB) ========== */
+.fabButton {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: 
+    radial-gradient(circle at 35% 25%, rgba(110, 218, 209, 0.5) 0%, transparent 40%),
+    radial-gradient(circle at 65% 70%, rgba(158, 244, 236, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at 20% 60%, rgba(184, 230, 223, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 80% 30%, rgba(110, 218, 209, 0.35) 0%, transparent 45%),
+    linear-gradient(135deg, #b8e6df 0%, #d4f1ec 100%);
+  background-size: 150% 150%, 180% 180%, 160% 160%, 140% 140%, 100% 100%;
+  background-position: 0% 0%, 100% 100%, 50% 50%, 70% 30%, 0% 0%;
+  animation: smokeFlow 18s ease-in-out infinite;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 20px rgba(106, 218, 209, 0.25),
+    inset 0 2px 12px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 8px rgba(110, 218, 209, 0.1);
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  overflow: hidden;
+}
+
+.fabButton::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(110, 218, 209, 0.5) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(158, 244, 236, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(184, 230, 223, 0.4) 0%, transparent 40%);
+  background-size: 100% 100%;
+  animation: smokeRotate 25s linear infinite;
+  filter: blur(20px);
+  opacity: 0.8;
+}
+
+.fabButton:hover {
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 
+    0 6px 28px rgba(106, 218, 209, 0.35),
+    inset 0 2px 12px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 8px rgba(110, 218, 209, 0.15);
+}
+
+.fabButton:hover::before {
+  animation-duration: 15s;
+}
+
+.fabButton:active {
+  transform: translateX(-50%) scale(0.98);
+}
+
+/* ========== Safe Area для iOS ========== */
+.safeArea {
+  height: env(safe-area-inset-bottom);
+}
+
+/* ========== Адаптивность ========== */
+@media (max-width: 400px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .orb {
+    width: 150px;
+    height: 150px;
+  }
+
+  .navItem {
+    min-width: 60px;
+    padding: 6px 12px;
+  }
 }
