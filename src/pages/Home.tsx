@@ -1,10 +1,26 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MessageCircle, Lightbulb, TrendingUp, Music, Mic } from "lucide-react";
 
 export default function Home() {
   const navigate = useNavigate();
   const [text, setText] = useState("");
+  const [userName, setUserName] = useState<string>("");
+
+  useEffect(() => {
+    // Получаем данные пользователя из Telegram
+    const tg = (window as any).Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      
+      const user = tg.initDataUnsafe?.user;
+      if (user) {
+        // Используем first_name, если есть
+        const name = user.first_name || user.username || "";
+        setUserName(name);
+      }
+    }
+  }, []);
 
   const goAssistant = (q?: string) => {
     const query = (q ?? text).trim();
@@ -20,7 +36,9 @@ export default function Home() {
     <>
       {/* Приветствие */}
       <section className="hero">
-        <div className="hello">Привет!</div>
+        <div className="hello">
+          {userName ? `Привет, ${userName}!` : "Привет!"}
+        </div>
         <h1 className="title">Как ты себя чувствуешь сегодня?</h1>
 
         {/* Кружок — кликабельный */}
