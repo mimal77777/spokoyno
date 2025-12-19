@@ -1,23 +1,41 @@
 /* ========== Страница Помощника ========== */
 .assistantPage {
-  padding: 20px;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 56px - 72px);
+  height: 100vh;
+  height: 100dvh;
   max-width: 600px;
   margin: 0 auto;
   width: 100%;
+  padding-top: 70px; /* было 140px */
+  padding-bottom: 0;
+  overflow: hidden;
 }
 
+/* Фиксированная рамка чата */
 .chatBox {
   flex: 1;
+  max-height: 45vh; /* ограничение высоты ~1/3 от экрана */
   background: white;
   border-radius: 20px;
-  padding: 16px;
-  overflow-y: auto;
+  padding: 0;
   box-shadow: 0 2px 16px rgba(106, 218, 209, 0.08);
-  margin-bottom: 12px;
+  margin: 0 20px 12px 20px;
   border: 1px solid #e3f5f1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Скроллируемый контейнер внутри рамки */
+.messagesWrapper {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .message {
@@ -132,7 +150,12 @@
   display: flex;
   gap: 8px;
   width: 100%;
+  max-width: 600px;
   align-items: flex-end;
+  padding: 12px 20px;
+  padding-bottom: calc(12px + 72px);
+  background: #f8fffe;
+  flex-shrink: 0;
 }
 
 .chatInput {
