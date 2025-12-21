@@ -297,9 +297,11 @@
 }
 
 .langDisabled {
-  opacity: 0.4;
+  opacity: 1;
   cursor: not-allowed !important;
   position: relative;
+  background: #f0f0f0 !important;
+  color: #1a1a1a !important;
 }
 
 .soonBadge {

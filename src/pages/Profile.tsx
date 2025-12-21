@@ -52,6 +52,13 @@ export default function Profile() {
   const navigate = useNavigate();
   const userId = getTelegramUserId();
 
+  // GitHub Pages: BASE_URL будет "/spokoyno/"
+const DOC_BASE = import.meta.env.BASE_URL;
+
+const openPdf = (fileName: string) => {
+  window.open(`${DOC_BASE}docs/${fileName}`, "_blank");
+};
+
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
 
@@ -357,18 +364,33 @@ export default function Profile() {
             <span>{t.about}</span>
           </div>
 
-          <button className={styles.docLink} onClick={() => navigate("/doc/privacy")}>
-            Политика конфиденциальности
-          </button>
-          <button className={styles.docLink} onClick={() => navigate("/doc/personal-data")}>
-            Согласие на обработку персональных данных
-          </button>
-          <button className={styles.docLink} onClick={() => navigate("/doc/license")}>
-            Лицензионное соглашение
-          </button>
-          <button className={styles.docLink} onClick={() => navigate("/doc/ads")}>
-            Согласие на рекламную рассылку
-          </button>
+          <button
+  className={styles.docLink}
+  onClick={() => openPdf("spokoyno_privacy_policy_v1_0.pdf")}
+>
+  Политика конфиденциальности
+</button>
+
+          <button
+  className={styles.docLink}
+  onClick={() => openPdf("spokoyno_personal_data_consent_v1_0.pdf")}
+>
+  Согласие на обработку персональных данных
+</button>
+
+<button
+  className={styles.docLink}
+  onClick={() => openPdf("spokoyno_license_agreement_v1_0.pdf")}
+>
+  Лицензионное соглашение
+</button>
+
+<button
+  className={styles.docLink}
+  onClick={() => openPdf("spokoyno_ads_consent_v1_0.pdf")}
+>
+  Согласие на рекламную рассылку
+</button>
 
           <div className={styles.legalNote}>
             Открывая приложение, вы соглашаетесь со всеми условиями использования.
