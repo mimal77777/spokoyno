@@ -1,35 +1,50 @@
-export async function sendMessageToAI(message: string): Promise<string> {
-  // 1) Берём initData из Telegram Mini App
-  const tg = (window as any)?.Telegram?.WebApp;
-  const initData: string = tg?.initData || "";
+export interface ChatResponse {
+  reply: string;
+  mode?: string;
+  pay_url?: string;
+}
 
-  // Мини-лог, чтобы видеть что initData реально есть
-  console.log("🔵 /api/chat отправка:", {
-    initDataLen: initData.length,
-    messagePreview: message.substring(0, 20) + "...",
-  });
+function detectTelegramLanguage(): "ru" | "en" | "es" {
+  const tg = (window as any).Telegram?.WebApp;
+  const code = String(tg?.initDataUnsafe?.user?.language_code || "").toLowerCase();
+  if (code.startsWith("ru")) return "ru";
+  if (code.startsWith("es")) return "es";
+  return "en";
+}
 
-  // 2) Шлём в backend то, что он теперь ожидает: initData + message
-  const response = await fetch("https://backend.spokoyno-api.workers.dev/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ initData, message }),
-  });
+export async function sendMessageToAI(message: string): Promise<ChatResponse> {
+  const tg = (window as any).Telegram?.WebApp;
 
-  // 3) Читаем ответ
-  const data = await response.json().catch(() => ({} as any));
+  let userId = "test123";
 
-  if (!response.ok) {
-    console.error("🔴 Backend error:", response.status, data);
-    throw new Error(data?.error || "Backend error");
+  if (tg) {
+    tg.ready();
+    const tgUser = tg.initDataUnsafe?.user;
+    if (tgUser?.id) {
+      userId = tgUser.id.toString();
+    }
   }
 
-  // 4) Нормальный лог
-  console.log("✅ Ответ backend:", {
-    mode: data?.mode,
-    replyPreview: (data?.reply || "").substring(0, 80) + "...",
+  // Язык: ручной выбор важнее, иначе — язык Telegram
+  const lang =
+    (localStorage.getItem("spokoyno_lang") as "ru" | "en" | "es" | null) ||
+    detectTelegramLanguage();
+
+  const response = await fetch("https://backend.spokoyno-api.workers.dev/api/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-spokoyno-lang": lang, // body НЕ меняем
+    },
+    body: JSON.stringify({
+      user_id: userId,
+      message,
+    }),
   });
 
-  // 5) Возвращаем reply
-  return (data?.reply as string) || "";
+  if (!response.ok) {
+    throw new Error("Backend error");
+  }
+
+  return await response.json();
 }

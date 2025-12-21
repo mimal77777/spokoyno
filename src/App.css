@@ -49,6 +49,11 @@ body {
   padding-top: 50px;
 }
 
+/* ВАЖНО: для экрана ассистента убираем верхний padding обёртки */
+.assistantApp {
+  padding-top: 0;
+}
+
 /* Тень по бокам для больших экранов */
 @media (min-width: 601px) {
   .appWrapper {
@@ -140,6 +145,11 @@ body {
   }
 }
 
+/* ВАЖНО: для ассистента убираем эти отступы и скролл — скролл внутри чата */
+.assistantMain {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
 
 /* ========== Главная страница (Hero) ========== */
 .hero {
