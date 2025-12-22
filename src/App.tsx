@@ -28,6 +28,7 @@ function Shell() {
   const hideMainChrome =
     path === "/assistant" ||
     path === "/profile" ||
+    path === "/tracker" ||
     path.startsWith("/doc/");
 
   // ВАЖНО: на этих страницах главный scroll НЕ должен быть в mainContent,
@@ -39,7 +40,7 @@ function Shell() {
 
   return (
     <div className="appWrapper">
-      <div className={`app${path === "/assistant" ? " assistantApp" : ""}`}>
+      <div className={`app${isIsolatedScreen ? " assistantApp" : ""}`}>
         {/* Главный хэдер показываем только на основных экранах */}
         {!hideMainChrome && (
           <header className="header">
