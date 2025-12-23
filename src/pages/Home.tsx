@@ -1,27 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MessageCircle, Lightbulb, TrendingUp, Music, Mic } from "lucide-react";
-
-function CenterLogo() {
-  return (
-    <svg
-      width="72"
-      height="72"
-      viewBox="0 0 100 100"
-      style={{ position: "absolute", inset: 0, margin: "auto", zIndex: 2 }}
-    >
-      <path
-        d="M50 18
-           C58 26 74 30 74 50
-           C74 70 58 74 50 82
-           C42 74 26 70 26 50
-           C26 30 42 26 50 18Z"
-        fill="white"
-        opacity="0.9"
-      />
-    </svg>
-  );
-}
+import AnimatedOrb from "../components/AnimatedOrb";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -47,9 +27,9 @@ export default function Home() {
         </div>
         <h1 className="title">Как ты себя чувствуешь сегодня?</h1>
 
-        {/* СФЕРА */}
+        {/* СФЕРА СО ЗВЁЗДАМИ И ЛОГОТИПОМ */}
         <div className="orb" onClick={goAssistant}>
-          <CenterLogo />
+          <AnimatedOrb />
         </div>
 
         <div className="inputWrap">
