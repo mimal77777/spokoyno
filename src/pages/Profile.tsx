@@ -6,8 +6,9 @@ import {
   Trash2,
   MessageCircle,
   FileText,
-  Globe,
   Sparkles,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import styles from "./Profile.module.css";
 
@@ -38,6 +39,51 @@ const LS_LANG_KEY = "spokoyno_lang";
 const LS_PROMO_KEY = "spokoyno_promo";
 const LS_SUMMARY_KEY = "spokoyno_summary";
 
+/** ====== Цветок (захардкожен, механика позже) ====== */
+type SphereState = { name: string; value: number; color: string };
+
+const PROFILE_SPHERES: SphereState[] = [
+  { name: "Спокойствие", value: 72, color: "#6EDAD1" },
+  { name: "Самооценка", value: 65, color: "#9D84FF" },
+  { name: "Отношения", value: 78, color: "#FF6B9D" },
+  { name: "Энергия", value: 68, color: "#FFA940" },
+  { name: "Уверенность", value: 71, color: "#3BB6AE" },
+  { name: "Самореализация", value: 66, color: "#6BCDFF" },
+];
+
+const PROFILE_SEGMENTS = 10;
+
+// Разделительные “микро-зазоры” делаем через stroke цветом фона
+const DIVIDER_COLOR = "#f8fffe";
+const DIVIDER_WIDTH = 2.2;
+
+function createSegmentPath(petalIndex: number, segmentIndex: number, totalPetals: number) {
+  const angleStart = (360 / totalPetals) * petalIndex;
+  const angleEnd = (360 / totalPetals) * (petalIndex + 1);
+
+  const rInner = (segmentIndex / PROFILE_SEGMENTS) * 100;
+  const rOuter = ((segmentIndex + 1) / PROFILE_SEGMENTS) * 100;
+
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+
+  const a1 = toRad(angleStart);
+  const a2 = toRad(angleEnd);
+
+  const x1 = 120 + rInner * Math.cos(a1);
+  const y1 = 120 + rInner * Math.sin(a1);
+
+  const x2 = 120 + rOuter * Math.cos(a1);
+  const y2 = 120 + rOuter * Math.sin(a1);
+
+  const x3 = 120 + rOuter * Math.cos(a2);
+  const y3 = 120 + rOuter * Math.sin(a2);
+
+  const x4 = 120 + rInner * Math.cos(a2);
+  const y4 = 120 + rInner * Math.sin(a2);
+
+  return `M ${x1} ${y1} L ${x2} ${y2} A ${rOuter} ${rOuter} 0 0 1 ${x3} ${y3} L ${x4} ${y4} A ${rInner} ${rInner} 0 0 0 ${x1} ${y1} Z`;
+}
+
 function dayNumberToDateString(dayNumber?: number) {
   if (!dayNumber) return "";
   const ms = dayNumber * 86400000;
@@ -52,29 +98,21 @@ export default function Profile() {
   const navigate = useNavigate();
   const userId = getTelegramUserId();
 
-  // GitHub Pages: BASE_URL будет "/spokoyno/"
-const DOC_BASE = import.meta.env.BASE_URL;
-
-const openPdf = (fileName: string) => {
-  window.open(`${DOC_BASE}docs/${fileName}`, "_blank");
-};
+  // язык читаем (в Profile UI выбора нет)
+  const lang =
+    (localStorage.getItem(LS_LANG_KEY) as "ru" | "en" | "es") || detectTelegramLanguage();
 
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
 
   const [promo, setPromo] = useState<string>(() => localStorage.getItem(LS_PROMO_KEY) || "");
-  const [lang, setLang] = useState<"ru" | "en" | "es">(
-    () => (localStorage.getItem(LS_LANG_KEY) as any) || detectTelegramLanguage()
-  );
 
   const [summary, setSummary] = useState<string>(() => localStorage.getItem(LS_SUMMARY_KEY) || "");
   const [summaryLoading, setSummaryLoading] = useState(false);
 
-  const storageKey = useMemo(() => `spokoyno_chat_${userId}`, [userId]);
+  const [summaryCollapsed, setSummaryCollapsed] = useState<boolean>(false);
 
-  useEffect(() => {
-    localStorage.setItem(LS_LANG_KEY, lang);
-  }, [lang]);
+  const storageKey = useMemo(() => `spokoyno_chat_${userId}`, [userId]);
 
   useEffect(() => {
     localStorage.setItem(LS_PROMO_KEY, promo);
@@ -137,6 +175,7 @@ const openPdf = (fileName: string) => {
       if (text) {
         setSummary(text);
         localStorage.setItem(LS_SUMMARY_KEY, text);
+        setSummaryCollapsed(false);
       }
     } catch {
       // no-op
@@ -151,58 +190,61 @@ const openPdf = (fileName: string) => {
         title: "Профиль",
         access: "Доступ",
         assistant: "Ассистент",
-        language: "Язык",
-        about: "About",
         promo: "Промокод",
         apply: "Применить",
         continue: "Продолжить диалог",
         clear: "Очистить историю",
         summary: "Сделать короткое резюме",
         summaryTitle: "Резюме",
+        summaryCollapse: "Свернуть",
+        summaryExpand: "Развернуть",
         tariff: "Тариф",
         leftMsgs: "Осталось сообщений",
         leftDays: "Осталось дней",
-        unlimited: "Без ограничений",
         pay: "Оплатить полный доступ",
         paidUntil: "Доступ до",
+        stateTitle: "Текущее состояние",
+        mentalLabel: "Ментальный индекс",
       },
       en: {
         title: "Profile",
         access: "Access",
         assistant: "Assistant",
-        language: "Language",
-        about: "About",
         promo: "Promo code",
         apply: "Apply",
         continue: "Continue chat",
         clear: "Clear history",
         summary: "Make a short summary",
         summaryTitle: "Summary",
+        summaryCollapse: "Collapse",
+        summaryExpand: "Expand",
         tariff: "Plan",
         leftMsgs: "Messages left",
         leftDays: "Days left",
-        unlimited: "Unlimited",
         pay: "Get full access",
         paidUntil: "Access until",
+        stateTitle: "Current state",
+        mentalLabel: "Mental index",
       },
       es: {
         title: "Perfil",
         access: "Acceso",
         assistant: "Asistente",
-        language: "Idioma",
-        about: "Acerca de",
         promo: "Código promo",
         apply: "Aplicar",
         continue: "Continuar chat",
         clear: "Borrar historial",
         summary: "Crear resumen corto",
         summaryTitle: "Resumen",
+        summaryCollapse: "Ocultar",
+        summaryExpand: "Mostrar",
         tariff: "Plan",
         leftMsgs: "Mensajes restantes",
         leftDays: "Días restantes",
-        unlimited: "Ilimitado",
         pay: "Obtener acceso completo",
         paidUntil: "Acceso hasta",
+        stateTitle: "Estado actual",
+        mentalLabel: "Índice mental",
       },
     } as const;
 
@@ -217,11 +259,14 @@ const openPdf = (fileName: string) => {
     return "Blocked";
   })();
 
+  const mentalIndex = useMemo(() => {
+    return Math.round(PROFILE_SPHERES.reduce((sum, s) => sum + s.value, 0) / PROFILE_SPHERES.length);
+  }, []);
+
   return (
     <div className={styles.screen}>
       <div className={styles.header}>
         <button className={styles.backBtn} onClick={() => navigate(-1)} aria-label="Back">
-          {/* ВАЖНО: как на ассистенте */}
           <ArrowLeft size={24} strokeWidth={2} />
         </button>
         <div className={styles.headerTitle}>{t.title}</div>
@@ -292,6 +337,56 @@ const openPdf = (fileName: string) => {
           )}
         </div>
 
+        {/* CURRENT STATE (цветок + число в центре, подпись под цветком) */}
+        <div className={styles.card}>
+          <div className={styles.cardTitle}>
+            <FileText size={18} />
+            <span>{t.stateTitle}</span>
+          </div>
+
+          <div className={styles.stateBox}>
+            <svg
+              className={styles.profileFlower}
+              viewBox="0 0 240 240"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {PROFILE_SPHERES.map((sphere, i) => {
+                const active = Math.round((sphere.value / 100) * PROFILE_SEGMENTS);
+
+                return Array.from({ length: PROFILE_SEGMENTS }).map((_, s) => (
+                  <path
+                    key={`${sphere.name}-${s}`}
+                    d={createSegmentPath(i, s, PROFILE_SPHERES.length)}
+                    fill={sphere.color}
+                    opacity={s < active ? 0.95 : 0.18}
+                    stroke={DIVIDER_COLOR}
+                    strokeWidth={DIVIDER_WIDTH}
+                    vectorEffect="non-scaling-stroke"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                  />
+                ));
+              })}
+
+              {/* Центр с числом (строго по центру) */}
+              <circle cx="120" cy="120" r="34" fill="#ffffff" stroke="#e3f5f1" strokeWidth="1" />
+
+              <text
+                x="120"
+                y="120"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                className={styles.indexNumber}
+                fill="#1a1a1a"
+              >
+                {mentalIndex}
+              </text>
+            </svg>
+
+            <div className={styles.mentalLabel}>{t.mentalLabel}</div>
+          </div>
+        </div>
+
         {/* ASSISTANT */}
         <div className={styles.card}>
           <div className={styles.cardTitle}>
@@ -318,83 +413,31 @@ const openPdf = (fileName: string) => {
 
           {canMakeSummary && summary && (
             <div className={styles.summaryCard}>
-              <div className={styles.summaryTitle}>{t.summaryTitle}</div>
-              <div className={styles.summaryText}>{summary}</div>
+              <div className={styles.summaryHeader}>
+                <div className={styles.summaryTitle}>{t.summaryTitle}</div>
+
+                <button
+                  className={styles.summaryToggle}
+                  onClick={() => setSummaryCollapsed((v) => !v)}
+                  type="button"
+                >
+                  {summaryCollapsed ? (
+                    <>
+                      <ChevronDown size={18} />
+                      <span>{t.summaryExpand}</span>
+                    </>
+                  ) : (
+                    <>
+                      <ChevronUp size={18} />
+                      <span>{t.summaryCollapse}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {!summaryCollapsed && <div className={styles.summaryText}>{summary}</div>}
             </div>
           )}
-        </div>
-
-        {/* LANGUAGE */}
-        <div className={styles.card}>
-          <div className={styles.cardTitle}>
-            <Globe size={18} />
-            <span>{t.language}</span>
-          </div>
-
-          <div className={styles.langRow}>
-            <button
-              className={`${styles.langBtn} ${lang === "ru" ? styles.langActive : ""}`}
-              onClick={() => setLang("ru")}
-            >
-              RU
-            </button>
-            <button
-              className={`${styles.langBtn} ${styles.langDisabled}`}
-              disabled
-            >
-              EN<span className={styles.soonBadge}>Soon</span>
-            </button>
-            <button
-              className={`${styles.langBtn} ${styles.langDisabled}`}
-              disabled
-            >
-              ES<span className={styles.soonBadge}>Soon</span>
-            </button>
-          </div>
-
-          <div className={styles.rowMuted}>
-            Default language comes from Telegram. Manual selection overrides it.
-          </div>
-        </div>
-
-        {/* ABOUT / DOCS */}
-        <div className={styles.card}>
-          <div className={styles.cardTitle}>
-            <FileText size={18} />
-            <span>{t.about}</span>
-          </div>
-
-          <button
-  className={styles.docLink}
-  onClick={() => openPdf("spokoyno_privacy_policy_v1_0.pdf")}
->
-  Политика конфиденциальности
-</button>
-
-          <button
-  className={styles.docLink}
-  onClick={() => openPdf("spokoyno_personal_data_consent_v1_0.pdf")}
->
-  Согласие на обработку персональных данных
-</button>
-
-<button
-  className={styles.docLink}
-  onClick={() => openPdf("spokoyno_license_agreement_v1_0.pdf")}
->
-  Лицензионное соглашение
-</button>
-
-<button
-  className={styles.docLink}
-  onClick={() => openPdf("spokoyno_ads_consent_v1_0.pdf")}
->
-  Согласие на рекламную рассылку
-</button>
-
-          <div className={styles.legalNote}>
-            Открывая приложение, вы соглашаетесь со всеми условиями использования.
-          </div>
         </div>
       </div>
     </div>

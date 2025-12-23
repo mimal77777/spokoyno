@@ -549,3 +549,16 @@ body {
     padding: 6px 12px;
   }
 }
+
+/* ===== ЛОГО В ХЕДЕРЕ ===== */
+.logoBtn {
+  background: linear-gradient(135deg, #6EDAD1 0%, #3BB6AE 100%);
+  cursor: default;
+}
+
+.brandMark {
+  width: 46px;
+  height: 46px;
+  display: block;
+  filter: brightness(0) invert(1);
+}
