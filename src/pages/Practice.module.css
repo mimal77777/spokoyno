@@ -1,0 +1,135 @@
+.screen {
+  height: 100vh;
+  height: 100dvh;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+  background: #f8fffe;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 6px 16px;
+  padding-top: 58px;
+
+  background: #f8fffe;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid #e3f5f1;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .header {
+    padding-top: 90px;
+  }
+}
+
+.backButton {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+
+  background: linear-gradient(135deg, #6EDAD1 0%, #3BB6AE 100%);
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(106, 218, 209, 0.12);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.backButton:active {
+  transform: scale(0.95);
+}
+
+.headerTitle {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.homeButton {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+
+  background: white;
+  color: #6EDAD1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(106, 218, 209, 0.12);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.homeButton:active {
+  transform: scale(0.95);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 16px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.content::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.practiceCard {
+  padding: 20px 18px;
+  background: #ffffff;
+  border: 1.5px solid rgba(110, 218, 209, 0.55);
+  box-shadow: 0 10px 22px rgba(106, 218, 209, 0.12);
+  border-radius: 18px;
+  margin-bottom: 20px;
+}
+
+.practiceTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+.practiceText {
+  font-size: 15px;
+  line-height: 1.45;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.placeholder {
+  padding: 24px;
+  background: #e3f5f1;
+  border-radius: 16px;
+  text-align: center;
+  color: #3BB6AE;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 20px;
+}

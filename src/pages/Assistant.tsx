@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Heart, Brain, Users, Zap, AlertCircle, ArrowLeft, CreditCard } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Assistant.module.css';
 import { sendMessageToAI } from '../api/chat';
 import type { ChatResponse } from '../api/chat';
@@ -12,6 +12,11 @@ interface Message {
   timestamp: Date;
 }
 
+type AssistantNavState = {
+  prefillText?: string;
+  autoSend?: boolean;
+};
+
 const getTelegramUserId = (): string => {
   const tg = (window as any).Telegram?.WebApp;
   return tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : 'anonymous';
@@ -19,6 +24,7 @@ const getTelegramUserId = (): string => {
 
 const Assistant = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const userId = getTelegramUserId();
   const storageKey = `spokoyno_chat_${userId}`;
@@ -94,6 +100,23 @@ const Assistant = () => {
       setLoading(false);
     }
   };
+
+  // ✅ Авто-отправка текста, если пришли с Home по микрофону
+  useEffect(() => {
+    const state = (location.state || {}) as AssistantNavState;
+
+    if (state.prefillText && state.autoSend) {
+      const text = String(state.prefillText).trim();
+      if (!text) return;
+
+      pushUserMessage(text);
+      void askAI(text);
+
+      // очищаем state, чтобы при возвратах/перерендере не отправлялось повторно
+      navigate('.', { replace: true, state: null });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state]);
 
   const handleSend = async () => {
     const msg = input.trim();

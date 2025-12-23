@@ -18,6 +18,19 @@ import Tracker from "./pages/Tracker";
 import More from "./pages/More";
 import Profile from "./pages/Profile";
 import Doc from "./pages/Doc";
+import Situations from "./pages/Situations";
+import SituationFear from "./pages/SituationFear";
+import SituationRelationships from "./pages/SituationRelationships";
+import SituationLoneliness from "./pages/SituationLoneliness";
+import SituationApathy from "./pages/SituationApathy";
+import SituationSelfEsteem from "./pages/SituationSelfEsteem";
+import SituationDating from "./pages/SituationDating";
+import PracticeBreathing from "./pages/PracticeBreathing";
+import PracticeBoundaries from "./pages/PracticeBoundaries";
+import PracticeSelfLove from "./pages/PracticeSelfLove";
+import PracticeMotivation from "./pages/PracticeMotivation";
+import PracticeSelfWorth from "./pages/PracticeSelfWorth";
+import PracticeRedFlags from "./pages/PracticeRedFlags";
 
 function Shell() {
   const location = useLocation();
@@ -29,6 +42,9 @@ function Shell() {
     path === "/profile" ||
     path === "/tracker" ||
     path === "/more" ||
+    path === "/situations" ||
+    path.startsWith("/situation/") ||
+    path.startsWith("/practice/") ||
     path.startsWith("/doc/");
 
   const isIsolatedScreen = hideMainChrome;
@@ -38,7 +54,6 @@ function Shell() {
       <div className={`app${isIsolatedScreen ? " assistantApp" : ""}`}>
         {!hideMainChrome && (
           <header className="header">
-            {/* ЛОГО ВМЕСТО ПЛЮСА (БЕЗ КЛИКА) */}
             <div className="iconBtn logoBtn" aria-hidden="true">
               <img src={BrandLogo} className="brandMark" alt="" />
             </div>
@@ -70,6 +85,25 @@ function Shell() {
         <main className={`mainContent${isIsolatedScreen ? " assistantMain" : ""}`}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            
+            {/* Situations - сначала специфичные роуты */}
+            <Route path="/situations" element={<Situations />} />
+            <Route path="/situation/fear" element={<SituationFear />} />
+            <Route path="/situation/relationships" element={<SituationRelationships />} />
+            <Route path="/situation/loneliness" element={<SituationLoneliness />} />
+            <Route path="/situation/apathy" element={<SituationApathy />} />
+            <Route path="/situation/selfesteem" element={<SituationSelfEsteem />} />
+            <Route path="/situation/dating" element={<SituationDating />} />
+            
+            {/* Practices */}
+            <Route path="/practice/breathing" element={<PracticeBreathing />} />
+            <Route path="/practice/boundaries" element={<PracticeBoundaries />} />
+            <Route path="/practice/selflove" element={<PracticeSelfLove />} />
+            <Route path="/practice/motivation" element={<PracticeMotivation />} />
+            <Route path="/practice/selfworth" element={<PracticeSelfWorth />} />
+            <Route path="/practice/redflags" element={<PracticeRedFlags />} />
+            
+            {/* Main pages */}
             <Route path="/assistant" element={<Assistant />} />
             <Route path="/tracker" element={<Tracker />} />
             <Route path="/more" element={<More />} />

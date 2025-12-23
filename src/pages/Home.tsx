@@ -1,12 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MessageCircle, Lightbulb, TrendingUp, Music, Mic } from "lucide-react";
 import AnimatedOrb from "../components/AnimatedOrb";
 
+declare global {
+  interface Window {
+    webkitSpeechRecognition?: any;
+    SpeechRecognition?: any;
+  }
+}
+
 export default function Home() {
   const navigate = useNavigate();
-  const [text, setText] = useState("");
   const [userName, setUserName] = useState("");
+  const recognitionRef = useRef<any>(null);
+  const isRecordingRef = useRef(false);
 
   useEffect(() => {
     const tg = (window as any).Telegram?.WebApp;
@@ -17,7 +25,42 @@ export default function Home() {
     }
   }, []);
 
-  const goAssistant = () => navigate("/assistant");
+  const startVoice = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      navigate("/assistant");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "ru-RU";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event: any) => {
+      const text = event.results[0][0].transcript;
+      navigate("/assistant", {
+        state: { prefillText: text, autoSend: true },
+      });
+    };
+
+    recognition.onerror = () => {
+      navigate("/assistant");
+    };
+
+    recognitionRef.current = recognition;
+    isRecordingRef.current = true;
+    recognition.start();
+  };
+
+  const stopVoice = () => {
+    if (recognitionRef.current && isRecordingRef.current) {
+      recognitionRef.current.stop();
+      isRecordingRef.current = false;
+    }
+  };
 
   return (
     <>
@@ -27,8 +70,7 @@ export default function Home() {
         </div>
         <h1 className="title">Как ты себя чувствуешь сегодня?</h1>
 
-        {/* СФЕРА СО ЗВЁЗДАМИ И ЛОГОТИПОМ */}
-        <div className="orb" onClick={goAssistant}>
+        <div className="orb" onClick={() => navigate("/assistant")}>
           <AnimatedOrb />
         </div>
 
@@ -36,10 +78,14 @@ export default function Home() {
           <input
             className="input"
             placeholder="Например: «Накрыла тревога…»"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
+            readOnly
           />
-          <button className="micBtn" onClick={goAssistant}>
+          <button
+            className="micBtn"
+            onPointerDown={startVoice}
+            onPointerUp={stopVoice}
+            onPointerLeave={stopVoice}
+          >
             <Mic size={84} />
           </button>
         </div>
@@ -58,7 +104,7 @@ export default function Home() {
           <div className="cardSub">Поддержка в моменте</div>
         </div>
 
-        <div className="card" onClick={() => navigate("/more")}>
+        <div className="card" onClick={() => navigate("/situations")}>
           <div className="cardIcon"><Lightbulb size={32} /></div>
           <div className="cardTitle">Ситуативная помощь</div>
           <div className="cardSub">Инструкции "что делать"</div>
