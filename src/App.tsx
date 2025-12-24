@@ -31,6 +31,8 @@ import PracticeSelfLove from "./pages/PracticeSelfLove";
 import PracticeMotivation from "./pages/PracticeMotivation";
 import PracticeSelfWorth from "./pages/PracticeSelfWorth";
 import PracticeRedFlags from "./pages/PracticeRedFlags";
+import MusicCategories from "./pages/MusicCategories";
+import MusicPlayer from "./pages/MusicPlayer";
 
 function Shell() {
   const location = useLocation();
@@ -43,8 +45,10 @@ function Shell() {
     path === "/tracker" ||
     path === "/more" ||
     path === "/situations" ||
+    path === "/music" ||
     path.startsWith("/situation/") ||
     path.startsWith("/practice/") ||
+    path.startsWith("/music/") ||
     path.startsWith("/doc/");
 
   const isIsolatedScreen = hideMainChrome;
@@ -86,7 +90,7 @@ function Shell() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             
-            {/* Situations - сначала специфичные роуты */}
+            {/* Situations */}
             <Route path="/situations" element={<Situations />} />
             <Route path="/situation/fear" element={<SituationFear />} />
             <Route path="/situation/relationships" element={<SituationRelationships />} />
@@ -102,6 +106,10 @@ function Shell() {
             <Route path="/practice/motivation" element={<PracticeMotivation />} />
             <Route path="/practice/selfworth" element={<PracticeSelfWorth />} />
             <Route path="/practice/redflags" element={<PracticeRedFlags />} />
+            
+            {/* Music */}
+            <Route path="/music" element={<MusicCategories />} />
+            <Route path="/music/:category" element={<MusicPlayer />} />
             
             {/* Main pages */}
             <Route path="/assistant" element={<Assistant />} />
