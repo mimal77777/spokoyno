@@ -3,6 +3,9 @@ import { ArrowLeft, Home, Play, Pause, SkipBack, SkipForward, Upload } from "luc
 import { useState, useRef, useEffect } from "react";
 import styles from "./Music.module.css";
 
+// R2 BASE URL
+const R2_BASE_URL = "https://pub-2555df60d5784d97a60035aa7433ccfa.r2.dev";
+
 const categoryTitles: Record<string, string> = {
   calm: "Calm",
   ambient: "Ambient",
@@ -30,10 +33,9 @@ export default function MusicPlayer() {
   const currentTrack = tracks[currentTrackIndex];
   const isCustomCategory = category === "custom";
 
-  // Загрузка треков из папки
+  // Загрузка треков из R2
   useEffect(() => {
     if (!category || category === "custom") {
-      // Для custom загружаем из localStorage
       const saved = localStorage.getItem("customTracks");
       if (saved) {
         setTracks(JSON.parse(saved));
@@ -42,28 +44,27 @@ export default function MusicPlayer() {
       return;
     }
 
-    // Автоматически находим все MP3 в папке
-    const loadTracksFromFolder = async () => {
+    const loadTracksFromR2 = async () => {
       try {
-        // Пытаемся загрузить manifest.json из папки (если есть)
-        const response = await fetch(`/music/${category}/manifest.json`);
+        // Загружаем manifest.json из R2
+        const response = await fetch(`${R2_BASE_URL}/${category}/manifest.json`);
         if (response.ok) {
           const manifest = await response.json();
           const tracksData = manifest.tracks.map((filename: string, index: number) => ({
             id: index + 1,
             title: filename.replace(/\.\w+$/, '').replace(/_/g, ' '),
             artist: categoryTitles[category] || category,
-            url: `/music/${category}/${filename}`,
+            url: `${R2_BASE_URL}/${category}/${filename}`, // URL на R2
           }));
           setTracks(tracksData);
         }
       } catch (error) {
-        console.error("Failed to load tracks:", error);
+        console.error("Failed to load tracks from R2:", error);
       }
       setLoading(false);
     };
 
-    loadTracksFromFolder();
+    loadTracksFromR2();
   }, [category]);
 
   // Canvas визуализация
@@ -194,8 +195,6 @@ export default function MusicPlayer() {
 
     const updatedTracks = [...tracks, newTrack];
     setTracks(updatedTracks);
-    
-    // Сохраняем в localStorage
     localStorage.setItem("customTracks", JSON.stringify(updatedTracks));
   };
 
@@ -224,7 +223,6 @@ export default function MusicPlayer() {
 
   return (
     <div className={styles.screen}>
-      {/* Header */}
       <div className={styles.header}>
         <button className={styles.backButton} onClick={() => navigate(-1)} aria-label="Назад">
           <ArrowLeft size={32} strokeWidth={2.5} />
@@ -235,15 +233,12 @@ export default function MusicPlayer() {
         </button>
       </div>
 
-      {/* Content */}
       <div className={styles.content}>
         <div className={styles.playerWrapper}>
-          {/* Визуализация */}
           <div className={styles.visualizer}>
             <canvas ref={canvasRef} className={styles.visualizerCanvas} />
           </div>
 
-          {/* Плеер */}
           <div className={styles.playerControls}>
             <div className={styles.trackInfo}>
               <div className={styles.trackTitle}>{currentTrack?.title || "Нет треков"}</div>
@@ -275,7 +270,6 @@ export default function MusicPlayer() {
             </div>
           </div>
 
-          {/* Список треков */}
           <div className={styles.trackList}>
             <div className={styles.trackListTitle}>
               {isCustomCategory ? "Мои треки" : "Треки"}
@@ -301,7 +295,6 @@ export default function MusicPlayer() {
               </div>
             ))}
 
-            {/* Кнопка загрузки только для custom */}
             {isCustomCategory && (
               <>
                 <button className={styles.uploadBtn} onClick={() => fileInputRef.current?.click()}>
@@ -321,7 +314,6 @@ export default function MusicPlayer() {
         </div>
       </div>
 
-      {/* Скрытый audio элемент */}
       <audio ref={audioRef} src={currentTrack?.url} />
     </div>
   );
