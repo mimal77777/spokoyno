@@ -1,17 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Home, Wind, Brain, Zap, Moon, Waves, Radio } from "lucide-react";
+import { ArrowLeft, Home, Wind, Sparkles, Heart, Coffee, Music2, Moon, Upload } from "lucide-react";
 import styles from "./Music.module.css";
 
 export default function MusicCategories() {
   const navigate = useNavigate();
 
   const categories = [
-    { id: "calm", title: "Спокойствие", subtitle: "Музыка для релаксации", icon: Wind },
-    { id: "focus", title: "Фокус", subtitle: "Музыка для концентрации", icon: Brain },
-    { id: "energy", title: "Разрядка", subtitle: "Музыка для энергии", icon: Zap },
-    { id: "sleep", title: "Сон", subtitle: "Музыка для засыпания", icon: Moon },
-    { id: "soundscapes", title: "Дождь / Океан / Лес", subtitle: "Звуки природы", icon: Waves },
-    { id: "noise", title: "Белый / Розовый шум", subtitle: "Фоновый шум", icon: Radio },
+    { id: "calm", title: "Calm", subtitle: "Спокойная музыка", icon: Wind },
+    { id: "ambient", title: "Ambient", subtitle: "Атмосферные звуки", icon: Sparkles },
+    { id: "meditation", title: "Meditation", subtitle: "Музыка для медитации", icon: Heart },
+    { id: "relax", title: "Relax", subtitle: "Расслабляющая музыка", icon: Coffee },
+    { id: "lofi", title: "Lo-Fi", subtitle: "Lo-Fi beats", icon: Music2 },
+    { id: "sleep", title: "Sleep", subtitle: "Музыка для сна", icon: Moon },
   ];
 
   return (
@@ -31,9 +31,9 @@ export default function MusicCategories() {
       <div className={styles.content}>
         {/* Intro */}
         <div className={styles.introCard}>
-          <div className={styles.introTitle}>Выбери настроение</div>
+          <div className={styles.introTitle}>Выбери стиль</div>
           <div className={styles.introText}>
-            Подборки музыки и звуков для разных состояний.
+            Подборки музыки для разных состояний.
           </div>
         </div>
 
@@ -58,6 +58,21 @@ export default function MusicCategories() {
               </button>
             );
           })}
+
+          {/* Кнопка загрузки */}
+          <button
+            className={styles.item}
+            onClick={() => navigate("/music/custom")}
+          >
+            <div className={styles.itemIcon}>
+              <Upload size={22} strokeWidth={2.5} />
+            </div>
+            <div className={styles.itemText}>
+              <div className={styles.itemTitle}>Загрузить своё</div>
+              <div className={styles.itemSub}>Добавить свои треки</div>
+            </div>
+            <div className={styles.chevron}>›</div>
+          </button>
         </div>
       </div>
     </div>

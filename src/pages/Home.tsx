@@ -116,7 +116,7 @@ export default function Home() {
           <div className="cardSub">Отмечай прогресс</div>
         </div>
 
-        <div className="card" onClick={() => navigate("/more")}>
+        <div className="card" onClick={() => navigate("/music")}>
           <div className="cardIcon"><Music size={32} /></div>
           <div className="cardTitle">Музыка для настроения</div>
           <div className="cardSub">Быстро переключиться</div>

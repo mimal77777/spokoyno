@@ -3,41 +3,14 @@ import { ArrowLeft, Home, Play, Pause, SkipBack, SkipForward, Upload } from "luc
 import { useState, useRef, useEffect } from "react";
 import styles from "./Music.module.css";
 
-// Моковые данные треков (позже заменишь на реальные)
-const tracksByCategory: Record<string, any[]> = {
-  calm: [
-    { id: 1, title: "Peaceful Morning", artist: "Ambient", duration: "4:32", url: "/music/calm1.mp3" },
-    { id: 2, title: "Gentle Waves", artist: "Nature", duration: "5:15", url: "/music/calm2.mp3" },
-  ],
-  focus: [
-    { id: 1, title: "Deep Work", artist: "Focus", duration: "6:20", url: "/music/focus1.mp3" },
-    { id: 2, title: "Flow State", artist: "Productivity", duration: "5:45", url: "/music/focus2.mp3" },
-  ],
-  energy: [
-    { id: 1, title: "Energy Boost", artist: "Upbeat", duration: "3:40", url: "/music/energy1.mp3" },
-    { id: 2, title: "Power Up", artist: "Motivation", duration: "4:10", url: "/music/energy2.mp3" },
-  ],
-  sleep: [
-    { id: 1, title: "Dream Sequence", artist: "Sleep", duration: "8:00", url: "/music/sleep1.mp3" },
-    { id: 2, title: "Night Sky", artist: "Ambient", duration: "7:30", url: "/music/sleep2.mp3" },
-  ],
-  soundscapes: [
-    { id: 1, title: "Rain Forest", artist: "Nature", duration: "10:00", url: "/music/rain.mp3" },
-    { id: 2, title: "Ocean Waves", artist: "Nature", duration: "12:00", url: "/music/ocean.mp3" },
-  ],
-  noise: [
-    { id: 1, title: "White Noise", artist: "Noise", duration: "∞", url: "/music/white-noise.mp3" },
-    { id: 2, title: "Pink Noise", artist: "Noise", duration: "∞", url: "/music/pink-noise.mp3" },
-  ],
-};
-
 const categoryTitles: Record<string, string> = {
-  calm: "Спокойствие",
-  focus: "Фокус",
-  energy: "Разрядка",
-  sleep: "Сон",
-  soundscapes: "Звуки природы",
-  noise: "Фоновый шум",
+  calm: "Calm",
+  ambient: "Ambient",
+  meditation: "Meditation",
+  relax: "Relax",
+  lofi: "Lo-Fi",
+  sleep: "Sleep",
+  custom: "Мои треки",
 };
 
 export default function MusicPlayer() {
@@ -47,13 +20,51 @@ export default function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [tracks, setTracks] = useState(tracksByCategory[category || "calm"] || []);
+  const [tracks, setTracks] = useState<any[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const currentTrack = tracks[currentTrackIndex];
+  const isCustomCategory = category === "custom";
+
+  // Загрузка треков из папки
+  useEffect(() => {
+    if (!category || category === "custom") {
+      // Для custom загружаем из localStorage
+      const saved = localStorage.getItem("customTracks");
+      if (saved) {
+        setTracks(JSON.parse(saved));
+      }
+      setLoading(false);
+      return;
+    }
+
+    // Автоматически находим все MP3 в папке
+    const loadTracksFromFolder = async () => {
+      try {
+        // Пытаемся загрузить manifest.json из папки (если есть)
+        const response = await fetch(`/music/${category}/manifest.json`);
+        if (response.ok) {
+          const manifest = await response.json();
+          const tracksData = manifest.tracks.map((filename: string, index: number) => ({
+            id: index + 1,
+            title: filename.replace(/\.\w+$/, '').replace(/_/g, ' '),
+            artist: categoryTitles[category] || category,
+            url: `/music/${category}/${filename}`,
+          }));
+          setTracks(tracksData);
+        }
+      } catch (error) {
+        console.error("Failed to load tracks:", error);
+      }
+      setLoading(false);
+    };
+
+    loadTracksFromFolder();
+  }, [category]);
 
   // Canvas визуализация
   useEffect(() => {
@@ -75,11 +86,9 @@ export default function MusicPlayer() {
     function animate() {
       if (!ctx || !canvas) return;
       
-      // Плавный переход амплитуды
       const targetAmplitude = isPlaying ? 1 : 0.3;
       amplitude += (targetAmplitude - amplitude) * 0.05;
 
-      // Градиентный фон
       const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, canvas.width / 2);
       gradient.addColorStop(0, '#6EDAD1');
       gradient.addColorStop(0.5, '#3BB6AE');
@@ -88,7 +97,6 @@ export default function MusicPlayer() {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Волны
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
       ctx.lineWidth = 2;
 
@@ -180,12 +188,15 @@ export default function MusicPlayer() {
       id: Date.now(),
       title: file.name.replace(/\.\w+$/, ''),
       artist: "Загружено",
-      duration: "—",
       url,
       custom: true,
     };
 
-    setTracks([...tracks, newTrack]);
+    const updatedTracks = [...tracks, newTrack];
+    setTracks(updatedTracks);
+    
+    // Сохраняем в localStorage
+    localStorage.setItem("customTracks", JSON.stringify(updatedTracks));
   };
 
   const formatTime = (time: number) => {
@@ -194,6 +205,22 @@ export default function MusicPlayer() {
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
+
+  if (loading) {
+    return (
+      <div className={styles.screen}>
+        <div className={styles.header}>
+          <button className={styles.backButton} onClick={() => navigate(-1)} aria-label="Назад">
+            <ArrowLeft size={32} strokeWidth={2.5} />
+          </button>
+          <span className={styles.headerTitle}>Загрузка...</span>
+          <button className={styles.homeButton} onClick={() => navigate("/")} aria-label="На главную">
+            <Home size={28} strokeWidth={2.5} />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.screen}>
@@ -219,7 +246,7 @@ export default function MusicPlayer() {
           {/* Плеер */}
           <div className={styles.playerControls}>
             <div className={styles.trackInfo}>
-              <div className={styles.trackTitle}>{currentTrack?.title || "—"}</div>
+              <div className={styles.trackTitle}>{currentTrack?.title || "Нет треков"}</div>
               <div className={styles.trackArtist}>{currentTrack?.artist || "—"}</div>
             </div>
 
@@ -236,13 +263,13 @@ export default function MusicPlayer() {
             </div>
 
             <div className={styles.buttons}>
-              <button className={styles.controlBtn} onClick={handlePrevious}>
+              <button className={styles.controlBtn} onClick={handlePrevious} disabled={tracks.length === 0}>
                 <SkipBack size={24} />
               </button>
-              <button className={`${styles.controlBtn} ${styles.playBtn}`} onClick={togglePlay}>
+              <button className={`${styles.controlBtn} ${styles.playBtn}`} onClick={togglePlay} disabled={tracks.length === 0}>
                 {isPlaying ? <Pause size={28} /> : <Play size={28} />}
               </button>
-              <button className={styles.controlBtn} onClick={handleNext}>
+              <button className={styles.controlBtn} onClick={handleNext} disabled={tracks.length === 0}>
                 <SkipForward size={24} />
               </button>
             </div>
@@ -250,7 +277,16 @@ export default function MusicPlayer() {
 
           {/* Список треков */}
           <div className={styles.trackList}>
-            <div className={styles.trackListTitle}>Треки</div>
+            <div className={styles.trackListTitle}>
+              {isCustomCategory ? "Мои треки" : "Треки"}
+            </div>
+            
+            {tracks.length === 0 && isCustomCategory && (
+              <div style={{ textAlign: 'center', padding: '20px', color: '#6b6b6b' }}>
+                Нет загруженных треков
+              </div>
+            )}
+            
             {tracks.map((track, index) => (
               <div
                 key={track.id}
@@ -262,21 +298,25 @@ export default function MusicPlayer() {
               >
                 <div className={styles.trackNumber}>{index + 1}</div>
                 <div className={styles.trackName}>{track.title}</div>
-                <div className={styles.trackDuration}>{track.duration}</div>
               </div>
             ))}
 
-            <button className={styles.uploadBtn} onClick={() => fileInputRef.current?.click()}>
-              <Upload size={18} />
-              <span>Добавить свой файл</span>
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="audio/*"
-              onChange={handleFileUpload}
-              style={{ display: 'none' }}
-            />
+            {/* Кнопка загрузки только для custom */}
+            {isCustomCategory && (
+              <>
+                <button className={styles.uploadBtn} onClick={() => fileInputRef.current?.click()}>
+                  <Upload size={18} />
+                  <span>Добавить свой файл</span>
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
+                />
+              </>
+            )}
           </div>
         </div>
       </div>
