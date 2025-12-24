@@ -6,6 +6,16 @@ import styles from "./Music.module.css";
 // R2 BASE URL
 const R2_BASE_URL = "https://pub-2555df60d5784d97a60035aa7433ccfa.r2.dev";
 
+// Маппинг URL категорий на папки R2
+const categoryFolders: Record<string, string> = {
+  calm: "Calm",
+  ambient: "ambient",
+  meditation: "meditation",
+  relax: "relax",
+  lofi: "lofi",
+  sleep: "sleep",
+};
+
 const categoryTitles: Record<string, string> = {
   calm: "Calm",
   ambient: "Ambient",
@@ -46,15 +56,18 @@ export default function MusicPlayer() {
 
     const loadTracksFromR2 = async () => {
       try {
+        // Получаем правильное имя папки
+        const folderName = categoryFolders[category] || category;
+        
         // Загружаем manifest.json из R2
-        const response = await fetch(`${R2_BASE_URL}/${category}/manifest.json`);
+        const response = await fetch(`${R2_BASE_URL}/${folderName}/manifest.json`);
         if (response.ok) {
           const manifest = await response.json();
           const tracksData = manifest.tracks.map((filename: string, index: number) => ({
             id: index + 1,
             title: filename.replace(/\.\w+$/, '').replace(/_/g, ' '),
             artist: categoryTitles[category] || category,
-            url: `${R2_BASE_URL}/${category}/${filename}`, // URL на R2
+            url: `${R2_BASE_URL}/${folderName}/${filename}`, // URL на R2
           }));
           setTracks(tracksData);
         }
