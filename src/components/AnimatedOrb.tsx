@@ -26,10 +26,10 @@ export default function AnimatedOrb() {
       
       particles.push({
         angle: Math.random() * Math.PI * 2,
-        distance: 35 + Math.random() * 40, // Масштаб под сферу
+        distance: 35 + Math.random() * 40,
         size: 0.3 + Math.random() * 1.2,
         opacity: 0.2 + Math.random() * 0.6,
-        speed: 0.0003 + Math.random() * 0.0008,
+        speed: 0.00039 + Math.random() * 0.00104, // +30% (было 0.0003 + 0.0008)
         orbitOffset: (Math.random() - 0.5) * 20,
         spiralOffset: angleOffset,
         density: Math.random() < 0.3 ? 2 : 1
@@ -42,7 +42,7 @@ export default function AnimatedOrb() {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      rotation += 0.002;
+      rotation += 0.0026; // +30% (было 0.002)
       
       particles.forEach(p => {
         p.angle += p.speed;
